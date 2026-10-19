@@ -89,14 +89,31 @@ the failure is counted. Nothing leaves the machine.
 `ros2/farm_ros` is a ROS 2 Humble package that runs the simulation as a node and publishes the
 robots as RViz markers, or generates a Gazebo world and keeps its robot models in sync.
 
+Tested on WSL Ubuntu with ROS 2 Humble from [RoboStack](https://robostack.github.io) (micromamba,
+no system install needed):
+
 ```bash
-# inside WSL, with ROS 2 Humble installed (e.g. RoboStack: micromamba + robostack-staging)
-cd ros2 && colcon build && source install/setup.bash
+# 1. ROS 2 Humble + Gazebo bridge (one-off, a few GB)
+micromamba create -n ros2_humble -c conda-forge -c robostack-staging \
+    python=3.11 ros-humble-desktop ros-humble-ros-gz colcon-common-extensions
+micromamba activate ros2_humble
+pip install "mesa==2.1.0" ortools agentspeak "numpy==$(python -c 'import numpy; print(numpy.__version__)')"
+
+# 2. build (copy out of OneDrive first; --symlink-install fails with new setuptools on Humble)
+mkdir -p ~/farm_ws/src && cp -r ros2/farm_ros ~/farm_ws/src/
+cd ~/farm_ws && colcon build && source install/setup.bash
+export FARM_SRC="/mnt/c/.../farming-robots/src"     # where the Mesa model lives
+
+# 3. run
 ros2 launch farm_ros farm_rviz.launch.py mode:=Novel n_pickers:=6
 ros2 launch farm_ros farm_gazebo.launch.py
 ```
 
-> **Status:** the package is written but has not yet been built or run on a ROS 2 install.
+The sim node publishes `/farm/pickers`, `/farm/drones` (PoseArray), `/farm/markers` (RViz),
+`/farm/kpis` and `/farm/robot_poses` (JSON) plus `/tf`. Checked headless: every topic
+publishes at the requested rate (10 Hz), and the generated `farm.sdf` passes `ign sdf -k` and
+loads in Gazebo (ground, crops, river, bases and the robots). The RViz and Gazebo windows
+themselves need a display (WSLg on Windows 11).
 
 ## Tests
 
@@ -170,6 +187,10 @@ intervals (`stats_tools.py`, full table in `results/advanced/stats.csv`).
 | Random roaming vs **Fictitious play** | 0.62 vs 0.63 | | no |
 | Ideal vs **lossy radio** 10 / 30 / 50 % | 0.61 vs 0.60 / **0.56** / **0.43** | | **yes** from 30 % loss |
 | Rule-based vs **BDI** / **Learned (PPO)** | 0.60 vs 0.59 / 0.57 | | no — the hand-written rules are already near what the policy learned |
+| Contract Net vs **LLM coordinator** (5 seeds) | 0.60 vs 0.62 | 881 vs **172** messages; **38×** slower; ~20 invalid assignments caught per run | no |
+| Ideal bus vs **SPADE / XMPP** (5 seeds) | 0.60 vs 0.64 | no messages lost; 5× slower | no |
+
+The full analysis of every comparison, with plots and tests, is section 6 of `src/analysis.ipynb`.
 
 ### What drives the results (Sobol sensitivity, 512 runs)
 
