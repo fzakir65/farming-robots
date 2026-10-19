@@ -171,6 +171,30 @@ intervals (`stats_tools.py`, full table in `results/advanced/stats.csv`).
 | Ideal vs **lossy radio** 10 / 30 / 50 % | 0.61 vs 0.60 / **0.56** / **0.43** | | **yes** from 30 % loss |
 | Rule-based vs **BDI** / **Learned (PPO)** | 0.60 vs 0.59 / 0.57 | | no — the hand-written rules are already near what the policy learned |
 
+### What drives the results (Sobol sensitivity, 512 runs)
+
+Total-order Sobol indices (`ST`, share of the output's variance a setting explains, including its
+interactions; `results/advanced/sobol.csv`):
+
+| Setting | Harvest rate | Energy per strawberry |
+|---|---|---|
+| Number of pickers | **0.52** | 0.16 |
+| Number of drones | 0.46 | **0.71** |
+| Picker capacity | 0.28 | 0.35 |
+| Initial ripe patches | 0.16 | 0.11 |
+| Message loss | 0.15 | 0.15 |
+| Share of strategic bidders | 0.14 | 0.11 |
+
+Fleet design (how many pickers and drones) matters far more than how the robots bid or talk. With
+64 base samples the confidence intervals are wide, so read the ranking, not the exact values.
+
+### Cheapest fleet for a target harvest (Optuna, 64 trials)
+
+A two-objective search (maximise harvest rate, minimise fleet cost) gives a Pareto front
+(`results/advanced/optuna_pareto.png`). For example, about **0.80** harvest needs 4 pickers + 4
+drones with capacity 20 (cost 72), and about **0.90** needs 6 pickers + 5 drones (cost 104). Almost
+every Pareto-optimal fleet used the Vickrey auction.
+
 ## Project layout
 
 ```
