@@ -1,0 +1,12 @@
+.venv/
+.venv-mesa3/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.hypothesis/
+.pytest_cache/
+pyjabber.db
+ros2/build/
+ros2/install/
+ros2/log/
+results/advanced/_run_log.txt

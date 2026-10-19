@@ -1,0 +1,36 @@
+# Core (Mesa 2.1, as used by the module)
+mesa==2.1.0
+numpy==2.5.4
+pandas==3.0.6
+matplotlib==3.11.2
+
+# Optimisation: CP-SAT winner determination, VRP central planner
+ortools==9.15.6755
+# Game theory: equilibria of the drones' sector game
+nashpy==0.0.43
+# BDI agents: AgentSpeak interpreter
+agentspeak==0.2.2
+# Real XMPP messaging (built-in pyjabber server needs greenlet for SQLAlchemy asyncio)
+spade==4.1.4
+greenlet==3.5.6
+# Local LLM coordinator (needs the Ollama app running, e.g. `ollama pull qwen2.5:3b`)
+ollama==0.6.3
+# Multi-agent reinforcement learning
+pettingzoo==1.27.0
+gymnasium==1.4.0
+stable-baselines3==2.9.0
+sb3-contrib==2.9.0
+torch==2.14.1
+# Experiments: statistics, sensitivity analysis, tuning
+scipy==1.18.1
+SALib==1.6.0
+optuna==5.0.0
+# Geographic view (0.7.x still has the ModularServer MapModule for Mesa 2)
+mesa-geo==0.7.1
+# Tests
+pytest==9.1.1
+hypothesis==6.170.2
+# Only needed to open or re-run the notebooks
+nbformat
+nbconvert
+ipykernel
