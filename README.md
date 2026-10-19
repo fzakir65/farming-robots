@@ -263,7 +263,4 @@ farming-robots/
 * Built for **Mesa 2.1** (`ModularServer` / `mesa.time` schedulers), as the module uses. Mesa 3
   support is a separate optional environment.
 * Every behaviour parameter (battery costs, crop ages, arm reach, auction deadline…) is in
-  `src/farm/constants.py`.
-* **Generative AI:** this code base, its tests, the notebook and the documentation were produced
-  with Claude Code (Anthropic). If you adapt any of it for assessed work, check your module's
-  rules on GenAI use and declare it as they require.
+
